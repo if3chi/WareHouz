@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+    redis:
+        image: 'redis:alpine'
+        container_name: 'redis'
+        ports:
+            - 6379:6379
+        volumes:
+            - warehouz:/data
+        networks:
+            - warehouz
+
+networks:
+    warehouz:
+        driver: bridge
+volumes:
+    warehouz:
+        driver: local
