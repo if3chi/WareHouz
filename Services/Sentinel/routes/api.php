@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegistrationController;
 
 Route::get('/', static fn () => response()
     ->json([
@@ -14,3 +15,4 @@ Route::get('/', static fn () => response()
 
 
 Route::post('login', LoginController::class)->name('auth:login');
+Route::post('register', RegistrationController::class)->name('auth:register');

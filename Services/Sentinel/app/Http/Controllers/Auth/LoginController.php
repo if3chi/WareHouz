@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\Status;
+use App\Services\AuthService;
 use App\Http\Requests\LoginRequest;
-use App\Services\AccessTokenService;
 use Illuminate\Contracts\Auth\Factory;
 use App\Http\Responses\MessageResponse;
 use App\Exceptions\AuthenticationException;
@@ -14,7 +14,7 @@ use Illuminate\Contracts\Support\Responsable;
 
 final readonly class LoginController
 {
-    public function __construct(private Factory $auth, private AccessTokenService $service)
+    public function __construct(private Factory $auth, private AuthService $service)
     {
     }
 
@@ -27,7 +27,7 @@ final readonly class LoginController
             );
         }
 
-        $token = $this->service->create(
+        $token = $this->service->createAccessToken(
             user: $this->auth->guard()->user()
         );
 
