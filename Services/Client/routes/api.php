@@ -10,3 +10,15 @@ Route::get('/', static fn () => response()
         'Version' => '2023.1.0',
         'Time' => time()
     ]));
+
+Route::middleware('client.auth')->prefix('clients')->as('client:')
+    ->group(static function (): void {
+        Route::get('/')->name('list');
+        Route::post('/')->name('register');
+        Route::put('{ulid}')->name('update');
+        Route::delete('{ulid}')->name('delete');
+
+        Route::prefix('{ulid}')->group(static function (): void {
+            Route::get('orders')->name('orders:list');
+        });
+    });
