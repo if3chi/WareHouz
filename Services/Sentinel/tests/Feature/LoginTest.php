@@ -35,7 +35,7 @@ final class LoginTest extends TestCase
     public function test_it_stores_token_in_cache(): void
     {
         $response = $this->login();
-        $token = Cache::get($response->json('token'));
+        $token = Cache::get($response->json('message'));
 
         $response->assertStatus(Status::OK->value);
         $this->assertIsArray($token);

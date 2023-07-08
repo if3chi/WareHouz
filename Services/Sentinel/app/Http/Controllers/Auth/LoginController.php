@@ -32,7 +32,7 @@ final readonly class LoginController
         );
 
         return new MessageResponse(data: [
-            'token' => $token
+            'message' => $token
         ]);
     }
 }

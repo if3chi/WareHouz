@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\Status;
-use App\Exceptions\AuthenticationException;
-use App\Http\Requests\RegistrationRequest;
-use App\Http\Responses\MessageResponse;
 use App\Services\AuthService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Responses\MessageResponse;
+use App\Http\Requests\RegistrationRequest;
+use App\Exceptions\AuthenticationException;
+use Illuminate\Contracts\Support\Responsable;
 
 final readonly class RegistrationController
 {
@@ -17,7 +19,7 @@ final readonly class RegistrationController
     {
     }
 
-    public function __invoke(RegistrationRequest $request)
+    public function __invoke(RegistrationRequest $request): JsonResponse
     {
         try {
             $user = $this->authService->createUser([
@@ -26,9 +28,9 @@ final readonly class RegistrationController
                 'password' => Hash::make(value: $request->password)
             ]);
 
-            return new MessageResponse(data: [
-                'token' => $this->authService->createAccessToken($user)
-            ], status: Status::CREATED);
+            return response()->json(data: [
+                'message' => $this->authService->createAccessToken($user)
+            ], status: Status::CREATED->value);
         } catch (\Throwable $e) {
             throw new AuthenticationException(
                 message: 'Failed to create user account',

@@ -38,7 +38,7 @@ class RegisterTest extends TestCase
     public function test_it_stores_token_in_cache(): void
     {
         $response = $this->register();
-        $token = Cache::get($response->json('token'));
+        $token = Cache::get($response->json('message'));
 
         $this->assertIsArray($token);
         $this->assertNotEquals($token, null);
