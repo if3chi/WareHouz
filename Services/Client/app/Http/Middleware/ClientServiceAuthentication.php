@@ -26,9 +26,11 @@ final class ClientServiceAuthentication
 
         $token = Str::of($request->header('Authorization'))->after(search: 'Bearer')->toString();
 
-        if (!Cache::get($token)) {
+        if (!$id = Cache::get($token)) {
             throw new AuthenticationException('Invalid Access Token', guards: ['api']);
         }
+
+        dd($id);
 
         return $next($request);
     }
