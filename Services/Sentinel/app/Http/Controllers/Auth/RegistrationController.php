@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\Status;
+use App\Guard\Vigilance;
 use App\Services\AuthService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Responses\MessageResponse;
 use App\Http\Requests\RegistrationRequest;
@@ -19,24 +19,21 @@ final readonly class RegistrationController
     {
     }
 
-    public function __invoke(RegistrationRequest $request): JsonResponse
+    public function __invoke(RegistrationRequest $request): Responsable
     {
-        try {
-            $user = $this->authService->createUser([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make(value: $request->password)
-            ]);
+        return Vigilance::handle(
+            callback: function () use ($request): Responsable {
+                $user = $this->authService->createUser([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make(value: $request->password)
+                ]);
 
-            return response()->json(data: [
-                'message' => $this->authService->createAccessToken($user)
-            ], status: Status::CREATED->value);
-        } catch (\Throwable $e) {
-            throw new AuthenticationException(
-                message: 'Failed to create user account',
-                code: Status::INTERNAL_SERVER_ERROR->value,
-                previous: $e
-            );
-        }
+                return new MessageResponse(data: [
+                    'token' => $this->authService->createAccessToken($user)
+                ], status: Status::CREATED);
+            },
+            throwable: AuthenticationException::accountBotched()
+        );
     }
 }
