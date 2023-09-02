@@ -13,7 +13,7 @@ final class Vigilance
     {
         try {
             return $callback();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             if (!is_null($throwable)) {
                 throw (fn () => new $this(message: $this->message, code: $this->code, previous: $th))
                     ->call($throwable);
